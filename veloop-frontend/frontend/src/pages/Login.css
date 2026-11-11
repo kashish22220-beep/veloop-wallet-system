@@ -1,0 +1,234 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap");
+
+.login-page {
+  --bg: #121626;
+  --bar-border: #262b40;
+  --card: #3b3d4b;
+  --card-border: #5a5d70;
+  --input: #292c3c;
+  --input-border: #686c80;
+  --blue: #3b82f6;
+  --blue-hover: #2f6fe0;
+  --text: #ffffff;
+  --error: #ff8a8a;
+
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+  padding: clamp(8px, 2vw, 24px);
+  box-sizing: border-box;
+}
+
+.login-page *,
+.login-page *::before,
+.login-page *::after {
+  box-sizing: border-box;
+}
+
+.login-topbar {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 4px 0;
+}
+
+.login-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 76px;
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid #6d7285;
+  border-radius: 999px;
+  background: #252a3b;
+  color: #fff;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.login-back:hover {
+  background: #343a50;
+  transform: translateX(-2px);
+}
+
+.login-back:focus-visible,
+.login-btn:focus-visible,
+.login-links a:focus-visible,
+.login-input:focus-visible {
+  outline: 3px solid #93c5fd;
+  outline-offset: 2px;
+}
+
+.login-topbar-title {
+  margin: 0;
+  font-size: clamp(1.35rem, 4vw, 1.9rem);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #fff;
+}
+
+.login-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: clamp(24px, 5vw, 40px) 0 48px;
+}
+
+.login-heading {
+  margin: 0 0 24px;
+  font-size: clamp(1.4rem, 4vw, 2rem);
+  font-weight: 700;
+  text-align: center;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 520px;
+  padding: clamp(22px, 4vw, 34px) clamp(18px, 5vw, 38px);
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 22px;
+}
+
+.login-label {
+  display: block;
+  margin: 0 0 8px;
+  color: #fff;
+  font-size: clamp(1rem, 2.5vw, 1.15rem);
+  font-weight: 600;
+}
+
+.login-input {
+  display: block;
+  width: 100%;
+  height: 52px;
+  margin-bottom: 22px;
+  padding: 0 16px;
+  border: 1px solid var(--input-border);
+  border-radius: 12px;
+  background: #fff;
+  color: #1c1f2e;
+  font: inherit;
+  font-size: clamp(0.9rem, 2.5vw, 1.05rem);
+}
+
+.login-input::placeholder {
+  color: #6b7080;
+}
+
+.login-google {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  height: 52px;
+  border: 1px solid #d5d7e2;
+  border-radius: 12px;
+  background: #fff;
+  color: #1c1f2e;
+  font: inherit;
+  font-size: 1.05rem;
+  font-weight: 800;
+  text-decoration: none;
+  transition: background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.login-google:hover {
+  background: #f7f8fc;
+  box-shadow: 0 4px 12px #12162626;
+}
+
+.login-google-icon {
+  color: #4285f4;
+  font-size: 1.35rem;
+  font-weight: 800;
+}
+
+.login-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 24px 0;
+  color: #d7d9e3;
+  font-size: 0.95rem;
+}
+
+.login-divider::before,
+.login-divider::after {
+  content: "";
+  height: 1px;
+  flex: 1;
+  background: #6b6e80;
+}
+
+.login-forgot {
+  display: flex;
+  justify-content: flex-end;
+  margin: -12px 0 28px;
+}
+
+.login-forgot a,
+.login-signup a {
+  color: #bfccff;
+  font-size: 1.05rem;
+  font-weight: 800;
+  text-decoration: underline;
+}
+
+.login-error {
+  margin: -16px 0 20px;
+  color: var(--error);
+  font-weight: 600;
+  text-align: center;
+}
+
+.login-btn {
+  display: block;
+  width: 100%;
+  max-width: 526px;
+  height: 54px;
+  margin: 0 auto;
+  border: 0;
+  border-radius: 20px;
+  background: var(--blue);
+  color: #fff;
+  font: inherit;
+  font-size: clamp(1.05rem, 3vw, 1.3rem);
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.login-btn:hover:not(:disabled) {
+  background: var(--blue-hover);
+}
+
+.login-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.login-signup {
+  margin: 24px 0 0;
+  color: #e5e6ed;
+  font-size: 1.05rem;
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .login-topbar { gap: 12px; }
+  .login-back { min-width: 70px; padding: 0 10px; }
+  .login-card { border-radius: 16px; }
+  .login-forgot a, .login-signup a { font-size: 1rem; }
+  .login-btn { height: 54px; }
+}
