@@ -27,7 +27,9 @@
 | 429 | Rate limit exceeded |
 | 500 | Internal error (details are never exposed) |
 
-> Exact `code` values and some field names are marked **(verify)**. Check them against your validators/controllers before submitting.
+Common error codes: `INVALID_CURRENCY`, `INVALID_AMOUNT`, `INVALID_SOURCE`, `INSUFFICIENT_BALANCE`, `WALLET_NOT_FOUND`, `METHOD_UNAVAILABLE`, `OPTION_UNAVAILABLE`, `NOT_ELIGIBLE`, `INVALID_PAYOUT_DETAILS`, `VERIFICATION_REQUIRED`, `DUPLICATE_WITHDRAWAL`, `WITHDRAWAL_NOT_FOUND`, `INVALID_TRANSITION`, `CONFLICT`.
+
+> Fields still marked **(verify)** were not confirmed against the controllers (response wrappers, `/wallet/summary`, auth responses). Check them before submitting.
 
 ---
 
@@ -125,6 +127,9 @@ Request fields **(verify with `adminCreditSchema`)**:
 ```json
 { "userId": "<targetUserId>", "currency": "ves", "amount": 500, "source": "ADMIN_CREDIT", "description": "Bonus" }
 ```
+`currency` is one of `ves`, `sves`, `gems`, `tokens`, `spins` (lowercase). `amount` must be a positive whole number. `source` must be an allowed credit source. Exact request keys: see `adminCreditSchema`.
+```text
+```
 Creates a CREDIT ledger entry and an audit log. Normal users get `403`.
 
 ### POST /wallet/debit  (admin)
@@ -203,7 +208,11 @@ Errors:
 | Not enough VEs | 400 | Insufficient VEs balance. |
 | Fake/unknown optionId | 400 | Selected payout option is unavailable. |
 | Inactive method | 400 | This payout method is currently unavailable. |
-| Same Idempotency-Key reused | 409 or returns the original result **(verify)** | This withdrawal request has already been submitted. |
+| Same Idempotency-Key reused | Original withdrawal returned (no second deduction) | - |
+| Wallet debit key collides inside a new request | 409 | This withdrawal request has already been submitted. (`DUPLICATE_WITHDRAWAL`) |
+| Not eligible (level / verification) | 403 | You are not eligible for this payout option. (`NOT_ELIGIBLE`) |
+| Too many open withdrawals | 403 | This request requires additional verification. (`VERIFICATION_REQUIRED`) |
+| Bad payout details | 400 | e.g. "UPI ID is required." (`INVALID_PAYOUT_DETAILS`) |
 | No token | 401 | Authentication required. |
 | Too many requests | 429 | Rate limit message |
 
@@ -211,10 +220,10 @@ Errors:
 The logged-in user's withdrawals (paginated). Query rules come from `listQuerySchema`.
 
 ### GET /withdrawals/:withdrawalId
-One withdrawal. A user can only read their own; another user's ID returns `404` (or `403`) **(verify)**.
+One withdrawal. A user can only read their own; someone else's ID returns `404` (`WITHDRAWAL_NOT_FOUND`).
 
 ### POST /withdrawals/:withdrawalId/cancel
-Cancels a **PENDING** withdrawal and returns the VEs to the wallet with a ledger entry. Other statuses return `400`.
+Cancels the logged-in user's own withdrawal (only if the status rules allow it, normally `PENDING`) and refunds the VEs with a `WITHDRAWAL_REFUND` ledger entry. If the status cannot change, returns `409` (`INVALID_TRANSITION`).
 
 ### Withdrawal statuses
 `PENDING` -> `PROCESSING` -> `APPROVED`, or `REJECTED` / `CANCELLED`. A rejected or cancelled withdrawal refunds the VEs and writes a ledger record.
@@ -232,11 +241,11 @@ All routes need a JWT **and** `role = admin`. Normal users get `403`.
 | PATCH | `/admin/payout/options/:optionId` | Change a payout option (active flag, required VEs etc.) |
 
 ### POST /admin/withdrawals/:withdrawalId/status
-Body **(verify with `adminStatusSchema`)**:
+Body:
 ```json
 { "status": "REJECTED", "rejectionReason": "Invalid UPI ID", "reviewNote": "Checked manually" }
 ```
-Rejecting refunds the VEs. Every call writes an audit log.
+`status` is one of `PROCESSING`, `APPROVED`, `REJECTED`, `CANCELLED`. Allowed moves follow the status flow. An invalid move returns `409` (`INVALID_TRANSITION`); a concurrent update returns `409` (`CONFLICT`). `REJECTED` / `CANCELLED` refund the VEs once (refund is idempotent). Every call writes an audit log.
 
 ### PATCH /admin/payout/options/:optionId
 Body **(verify with `updateOptionSchema`)**:
