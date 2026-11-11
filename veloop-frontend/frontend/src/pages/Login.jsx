@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { login, setToken, errMsg } from "../api";
+import { errMsg } from "../api";
+import { useAuth } from "../AuthContext";
 import "./Login.css";
 
 const googleLoginUrl = `${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}`.replace(/\/$/, "") + "/auth/google";
 
 export default function Login() {
   const navigate = useNavigate();
+    const { login } = useAuth(); 
   const [searchParams] = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -29,10 +31,8 @@ export default function Login() {
 
     setLoading(true);
     try {
-      const data = await login(email.trim(), password);
-      // Only the JWT is stored. Wallet balances always come from the backend.
-      setToken(data.token);
-      navigate("/wallet");
+      await login(email.trim(), password);
+navigate("/wallet");
     } catch (err) {
       setError(errMsg(err));
     } finally {
