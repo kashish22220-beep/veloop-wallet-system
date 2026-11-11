@@ -1,0 +1,283 @@
+{
+  "info": {
+    "name": "VELoop Wallet API",
+    "description": "Set baseUrl first. Run Auth > Login (or Login Admin) and the token is saved automatically.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "https://veloop-wallet-syatem.onrender.com/api" },
+    { "key": "token", "value": "" },
+    { "key": "withdrawalId", "value": "" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"test1@example.com\",\n  \"password\": \"Passw0rd123\"\n}" },
+            "url": { "raw": "{{baseUrl}}/auth/register", "host": ["{{baseUrl}}"], "path": ["auth", "register"] }
+          }
+        },
+        {
+          "name": "Login (saves token)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const j = pm.response.json();",
+                  "if (j.token) { pm.collectionVariables.set('token', j.token); }",
+                  "pm.test('login ok', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"demo@veloop.test\",\n  \"password\": \"PUT_DEMO_PASSWORD_HERE\"\n}" },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "Me",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/auth/me", "host": ["{{baseUrl}}"], "path": ["auth", "me"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Wallet",
+      "item": [
+        {
+          "name": "Get Wallet",
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/wallet", "host": ["{{baseUrl}}"], "path": ["wallet"] } }
+        },
+        {
+          "name": "Get Summary",
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/wallet/summary", "host": ["{{baseUrl}}"], "path": ["wallet", "summary"] } }
+        },
+        {
+          "name": "Get Transactions (paginated)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/wallet/transactions?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["wallet", "transactions"],
+              "query": [{ "key": "page", "value": "1" }, { "key": "limit", "value": "20" }]
+            }
+          }
+        },
+        {
+          "name": "Admin Credit (admin only, normal user = 403)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"userId\": \"PUT_USER_ID\",\n  \"currency\": \"ves\",\n  \"amount\": 500,\n  \"description\": \"Test credit\"\n}" },
+            "url": { "raw": "{{baseUrl}}/wallet/credit", "host": ["{{baseUrl}}"], "path": ["wallet", "credit"] }
+          }
+        },
+        {
+          "name": "Admin Debit (admin only, normal user = 403)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"userId\": \"PUT_USER_ID\",\n  \"currency\": \"ves\",\n  \"amount\": 100,\n  \"description\": \"Test debit\"\n}" },
+            "url": { "raw": "{{baseUrl}}/wallet/debit", "host": ["{{baseUrl}}"], "path": ["wallet", "debit"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Payout",
+      "item": [
+        {
+          "name": "Get Methods",
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/payout/methods", "host": ["{{baseUrl}}"], "path": ["payout", "methods"] } }
+        },
+        {
+          "name": "Get All Options",
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/payout/options", "host": ["{{baseUrl}}"], "path": ["payout", "options"] } }
+        },
+        {
+          "name": "Get UPI Options",
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/payout/options/upi", "host": ["{{baseUrl}}"], "path": ["payout", "options", "upi"] } }
+        }
+      ]
+    },
+    {
+      "name": "Withdrawals",
+      "item": [
+        {
+          "name": "Create Withdrawal (Rs10 UPI)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const j = pm.response.json();",
+                  "if (j.withdrawal && j.withdrawal.withdrawalId) { pm.collectionVariables.set('withdrawalId', j.withdrawal.withdrawalId); }"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Idempotency-Key", "value": "{{$guid}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"method\": \"upi\",\n  \"optionId\": \"upi_10\",\n  \"details\": { \"upiId\": \"test@upi\" }\n}" },
+            "url": { "raw": "{{baseUrl}}/withdrawals", "host": ["{{baseUrl}}"], "path": ["withdrawals"] }
+          }
+        },
+        {
+          "name": "Create Withdrawal - FAKE optionId (should be rejected)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Idempotency-Key", "value": "{{$guid}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"method\": \"upi\",\n  \"optionId\": \"upi_999999\",\n  \"details\": { \"upiId\": \"test@upi\" }\n}" },
+            "url": { "raw": "{{baseUrl}}/withdrawals", "host": ["{{baseUrl}}"], "path": ["withdrawals"] }
+          }
+        },
+        {
+          "name": "Create Withdrawal - amount manipulation (backend ignores amount)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Idempotency-Key", "value": "{{$guid}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"method\": \"upi\",\n  \"optionId\": \"upi_10\",\n  \"amount\": 1,\n  \"details\": { \"upiId\": \"test@upi\" }\n}" },
+            "url": { "raw": "{{baseUrl}}/withdrawals", "host": ["{{baseUrl}}"], "path": ["withdrawals"] }
+          }
+        },
+        {
+          "name": "Duplicate test (send twice with SAME key)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Idempotency-Key", "value": "fixed-key-123" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"method\": \"upi\",\n  \"optionId\": \"upi_10\",\n  \"details\": { \"upiId\": \"test@upi\" }\n}" },
+            "url": { "raw": "{{baseUrl}}/withdrawals", "host": ["{{baseUrl}}"], "path": ["withdrawals"] }
+          }
+        },
+        {
+          "name": "List My Withdrawals",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/withdrawals?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["withdrawals"],
+              "query": [{ "key": "page", "value": "1" }, { "key": "limit", "value": "20" }]
+            }
+          }
+        },
+        {
+          "name": "Get Withdrawal",
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/withdrawals/{{withdrawalId}}", "host": ["{{baseUrl}}"], "path": ["withdrawals", "{{withdrawalId}}"] } }
+        },
+        {
+          "name": "Cancel Withdrawal",
+          "request": { "method": "POST", "header": [], "url": { "raw": "{{baseUrl}}/withdrawals/{{withdrawalId}}/cancel", "host": ["{{baseUrl}}"], "path": ["withdrawals", "{{withdrawalId}}", "cancel"] } }
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "List All Withdrawals",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/withdrawals?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "withdrawals"],
+              "query": [{ "key": "page", "value": "1" }, { "key": "limit", "value": "20" }]
+            }
+          }
+        },
+        {
+          "name": "Reject Withdrawal",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"REJECTED\",\n  \"rejectionReason\": \"Invalid UPI ID\"\n}" },
+            "url": { "raw": "{{baseUrl}}/admin/withdrawals/{{withdrawalId}}/status", "host": ["{{baseUrl}}"], "path": ["admin", "withdrawals", "{{withdrawalId}}", "status"] }
+          }
+        },
+        {
+          "name": "Approve Withdrawal",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"APPROVED\"\n}" },
+            "url": { "raw": "{{baseUrl}}/admin/withdrawals/{{withdrawalId}}/status", "host": ["{{baseUrl}}"], "path": ["admin", "withdrawals", "{{withdrawalId}}", "status"] }
+          }
+        },
+        {
+          "name": "Update Payout Option",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"active\": true\n}" },
+            "url": { "raw": "{{baseUrl}}/admin/payout/options/upi_10", "host": ["{{baseUrl}}"], "path": ["admin", "payout", "options", "upi_10"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Security checks",
+      "item": [
+        {
+          "name": "Wallet without token (expect 401)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/wallet", "host": ["{{baseUrl}}"], "path": ["wallet"] }
+          }
+        },
+        {
+          "name": "Wallet with other userId (userId ignored)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/wallet?userId=SOMEONE_ELSE_ID",
+              "host": ["{{baseUrl}}"],
+              "path": ["wallet"],
+              "query": [{ "key": "userId", "value": "SOMEONE_ELSE_ID" }]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
