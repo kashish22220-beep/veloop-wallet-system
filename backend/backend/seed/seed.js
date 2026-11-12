@@ -15,6 +15,8 @@ const Withdrawal = require('../src/models/Withdrawal');
 const PayoutMethod = require('../src/models/PayoutMethod');
 const PayoutOption = require('../src/models/PayoutOption');
 const AuditLog = require('../src/models/AuditLog');
+const RewardClaim = require('../src/models/RewardClaim');
+const AdSession = require('../src/models/AdSession');
 const { creditWallet, debitWallet } = require('../src/services/walletService');
 
 const UPI_PATTERN = '^[a-zA-Z0-9._-]{2,256}@[a-zA-Z]{2,64}$';
@@ -98,7 +100,7 @@ async function seed() {
 
   await mongoose.connect(process.env.MONGO_URI);
   await Promise.all(
-    [User, Wallet, WalletTransaction, Withdrawal, PayoutMethod, PayoutOption, AuditLog].map((m) => m.deleteMany({}))
+    [User, Wallet, WalletTransaction, Withdrawal, PayoutMethod, PayoutOption, AuditLog, RewardClaim, AdSession].map((m) => m.deleteMany({}))
   );
 
   // Payout configuration

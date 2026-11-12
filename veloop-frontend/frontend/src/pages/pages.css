@@ -245,3 +245,231 @@
   .pg-title { font-size: 1.4rem; }
   .panel { padding: 18px; }
 }
+
+/* ---------- Wallet refresh ---------- */
+.pg {
+  background:
+    radial-gradient(circle at 88% 8%, #343b8f 0, transparent 26rem),
+    radial-gradient(circle at 4% 92%, #202451 0, transparent 24rem),
+    #0b0e1c;
+}
+.pg-topbar {
+  background: #11152aab;
+  border-color: #ffffff12;
+  box-shadow: 0 18px 50px #05071345;
+  backdrop-filter: blur(18px);
+}
+.pg-title { letter-spacing: 0.02em; }
+.balance-card {
+  overflow: hidden;
+  min-height: 270px;
+  border: 1px solid #7c83ff66;
+  background:
+    radial-gradient(circle at 84% 18%, #8b5cf633 0, transparent 11rem),
+    linear-gradient(135deg, #242b73 0%, #131736 58%, #101225 100%);
+  box-shadow: 0 24px 70px #080a1b80;
+}
+.balance-card::after {
+  content: "";
+  position: absolute;
+  width: 230px;
+  height: 230px;
+  right: -72px;
+  bottom: -120px;
+  border: 1px solid #ffffff20;
+  border-radius: 50%;
+  box-shadow: 0 0 0 24px #ffffff08, 0 0 0 48px #ffffff05;
+}
+.badges { position: relative; z-index: 1; }
+.net-label { color: #b7c0ff; font-size: 0.75rem; }
+.ves-line strong { font-size: 1.7rem; }
+.big-inr {
+  font-size: clamp(2.8rem, 6vw, 4.8rem);
+  letter-spacing: -0.05em;
+  line-height: 1;
+  text-shadow: 0 8px 30px #00000035;
+}
+.stats { gap: 12px; }
+.stat {
+  min-height: 86px;
+  background: #15192eab;
+  border-color: #ffffff12;
+  box-shadow: 0 12px 30px #0507132b;
+  transition: transform 160ms ease, border-color 160ms ease;
+}
+.stat:hover { transform: translateY(-2px); border-color: #7c83ff66; }
+.stat-ico { background: linear-gradient(135deg, #2d3475, #1d2143); }
+.stat-highlight .stat-ico { color: #fbbf24; }
+.panel {
+  border: 1px solid #ffffff14;
+  background: #14182cdb;
+  box-shadow: 0 24px 70px #05071345;
+}
+.tabs {
+  display: flex;
+  width: 100%;
+  overflow-x: auto;
+  margin-bottom: 30px;
+  scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tab { white-space: nowrap; flex: 1; color: #f2f4ff !important; }
+.tab[aria-selected="true"] {
+  color: #fff;
+  background: linear-gradient(135deg, #5c58e8, #7a4fe0);
+  box-shadow: 0 8px 18px #5048db38;
+}
+.tab[aria-selected="false"] { color: #d7dcff !important; }
+.section-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+.section-heading h2 { margin: 0; font-size: 1.5rem; }
+.eyebrow {
+  margin: 0 0 5px;
+  color: #8f96ff;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.text-btn {
+  border: 0;
+  padding: 4px 0;
+  color: #aab0ff;
+  background: transparent;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+.text-btn:hover { color: #fff; }
+.overview-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #ffffff12;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+.pg-state.compact { padding: 36px 16px; }
+.tx-list { gap: 8px; }
+.tx {
+  grid-template-columns: 42px minmax(0, 1fr) auto auto;
+  gap: 10px 14px;
+  padding: 13px 15px;
+  border-color: #ffffff0f;
+  background: #1d223d99;
+  transition: background 160ms ease;
+}
+.tx:hover { background: #252b4b; }
+.tx-icon, .withdrawal-icon {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  color: #7ee8bb;
+  background: #1a5b4b66;
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+.tx-main { min-width: 0; }
+.tx-desc { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tx-amount { white-space: nowrap; }
+.tx-status {
+  min-width: 74px;
+  text-align: center;
+  color: #aab0ff;
+  background: #343975;
+  border-radius: 999px;
+  padding: 4px 8px;
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+.tx-status-completed, .tx-status-approved { color: #8af0c6; background: #15533e; }
+.tx-status-failed, .tx-status-rejected { color: #ffabb8; background: #5a2535; }
+.notice {
+  color: #c8cdff;
+  background: #20255280;
+  border-color: #646aff4d;
+}
+.method {
+  border-color: #ffffff12;
+  background: linear-gradient(145deg, #242a4a, #1a1e36);
+  transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+.method:hover:not(:disabled) { transform: translateY(-3px); border-color: #7c83ff88; box-shadow: 0 14px 28px #080a1b45; }
+.continue-btn { box-shadow: 0 14px 28px #5148d14d; }
+.count-label { color: var(--muted); font-size: 0.82rem; }
+.withdrawal-list { display: grid; gap: 8px; }
+.withdrawal-row {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 15px;
+  border: 1px solid #ffffff0f;
+  border-radius: 14px;
+  background: #1d223d99;
+}
+.withdrawal-icon { color: #b5baff; background: #343975; }
+.withdrawal-main, .withdrawal-payout { display: grid; gap: 3px; }
+.withdrawal-main span, .withdrawal-payout span { color: var(--muted); font-size: 0.78rem; }
+.withdrawal-payout { text-align: right; }
+.withdrawal-status {
+  min-width: 94px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  text-align: center;
+  color: #f8d77e;
+  background: #55471d;
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+.status-approved { color: #8af0c6; background: #15533e; }
+.status-rejected, .status-cancelled { color: #ffabb8; background: #5a2535; }
+.status-processing { color: #bfc3ff; background: #343975; }
+.empty-state { padding: 34px 16px 22px; text-align: center; }
+.empty-icon {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  margin: 0 auto 14px;
+  border-radius: 16px;
+  color: #b5baff;
+  background: #343975;
+  font-size: 1.5rem;
+}
+.empty-state h2 { margin: 0 0 5px; font-size: 1.2rem; }
+.empty-state p { max-width: 360px; margin: 0 auto; color: var(--muted); font-size: 0.9rem; }
+
+@media (max-width: 700px) {
+  .tx { grid-template-columns: 38px minmax(0, 1fr) auto; }
+  .tx-status { grid-column: 2 / -1; justify-self: start; }
+  .withdrawal-row { grid-template-columns: 42px minmax(0, 1fr) auto; }
+  .withdrawal-payout { grid-column: 2; text-align: left; }
+  .withdrawal-status { grid-column: 3; grid-row: 1 / span 2; }
+}
+@media (max-width: 560px) {
+  .balance-card { padding: 22px 20px; }
+  .refresh-btn { top: 18px; right: 18px; }
+  .stats { gap: 9px; }
+  .stat { min-height: 76px; padding: 13px; }
+  .panel { border-radius: 20px; }
+  .tabs { margin: -2px -4px 24px; width: calc(100% + 8px); }
+  .tab { flex: 0 0 auto; padding: 10px 14px; }
+  .section-heading { align-items: flex-start; }
+  .section-heading h2 { font-size: 1.25rem; }
+  .tx { padding: 12px; }
+  .tx-amount { font-size: 0.95rem; }
+  .withdrawal-row { padding: 12px; }
+  .withdrawal-main strong, .withdrawal-payout strong { font-size: 0.9rem; }
+}

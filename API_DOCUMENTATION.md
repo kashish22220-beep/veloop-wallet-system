@@ -256,6 +256,23 @@ Writes a "Payout Configuration Changed" audit log.
 
 ---
 
+## 6. Rewards - `/api/rewards`
+
+All reward routes require a JWT. Reward amounts and claim limits are enforced by the backend and each successful claim writes a wallet ledger entry plus a protected claim record.
+
+| Method | Path | Description |
+|---|---|---|
+| GET | `/rewards/status` | Daily streak, ad quota, bonus and referral status |
+| POST | `/rewards/daily` | Claim the daily check-in/streak reward once per day |
+| POST | `/rewards/ad/session` | Start an expiring ad session before showing an ad |
+| GET | `/rewards/ad/callback` | Public AdMob SSV callback; credits only after signature verification |
+| POST | `/rewards/bonus` | Claim the one-time welcome bonus |
+| POST | `/rewards/referral` | Apply another user's referral code |
+
+Ad rewards are credited only by the AdMob server-side verification callback. The callback validates Google's signature, requires an unexpired session created by the authenticated app, enforces the daily cap, and is idempotent on the AdMob transaction ID. Configure AdMob `custom_data` with the returned `sessionId`.
+
+---
+
 ## Security summary
 
 - JWT authentication on all wallet, payout, withdrawal and admin routes.

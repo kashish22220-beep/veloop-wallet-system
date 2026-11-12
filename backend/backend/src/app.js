@@ -8,6 +8,7 @@ const walletRoutes = require('./routes/walletRoutes');
 const payoutRoutes = require('./routes/payoutRoutes');
 const withdrawalRoutes = require('./routes/withdrawalRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const rewardRoutes = require('./routes/rewardRoutes');
 const { notFound, errorHandler } = require('./middleware/errorHandler');
 const { apiLimiter } = require('./middleware/rateLimiters');
 
@@ -33,6 +34,7 @@ app.use('/api/wallet', walletRoutes);
 app.use('/api/payout', payoutRoutes);
 app.use('/api/withdrawals', withdrawalRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/rewards', rewardRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

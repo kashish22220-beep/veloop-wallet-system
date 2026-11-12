@@ -1,5 +1,6 @@
 
 const mongoose = require('mongoose');
+const { randomBytes } = require('crypto');
 
 const userSchema = new mongoose.Schema(
   {
@@ -9,6 +10,14 @@ const userSchema = new mongoose.Schema(
     passwordHash: { type: String, required: false, select: false },
 
     googleId: { type: String, unique: true, sparse: true },
+    referralCode: {
+      type: String,
+      unique: true,
+      sparse: true,
+      uppercase: true,
+      trim: true,
+      default: () => randomBytes(5).toString('hex').toUpperCase(),
+    },
 
     role: { type: String, enum: ['user', 'admin'], default: 'user' },
     accountStatus: { type: String, enum: ['active', 'suspended', 'blocked'], default: 'active' },
